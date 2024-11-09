@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "password-manager-api"
+version = "0.1.0"
+description = "API for existing password manager"
+authors = ["Adwaith PJ <adwaithleans616@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.4"
+uvicorn = {extras = ["standard"], version = "^0.32.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
