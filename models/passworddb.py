@@ -17,8 +17,11 @@ class Password(EntityMeta):
 
     def normalize(self):
         return {
-            "id":self.id.__str__(),
-            "user_id":self.user_id.__str__(),
-            "website_name":self.website_name.__str__(),
-            "password"
+            self.id: {
+                "id": self.id.__str__(),
+                "user_id": self.user_id.__str__(),
+                "website_name": self.website_name.__str__(),
+                "username_email": self.username_email.__str__(),
+                "password": self.website_name.__str__(),
+            },
         }

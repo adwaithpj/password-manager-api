@@ -1,9 +1,20 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class PasswordGetSchema(BaseModel):
     id: int
     user_id: int
-    website_name: string
-    username_email: string
-    password: string
+    website_name: str
+    username_email: str
+    password: str
+
+
+class PasswordCreateSchema(BaseModel):
+    website_name: str
+    username_email: str
+    password: str
+
+
+class PasswordUpdateSchema(BaseModel):
+    username_email: str
+    password: str

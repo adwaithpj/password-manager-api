@@ -4,14 +4,16 @@ from typing import Annotated, Optional, List
 # from models.passworddb import Password
 from cryptography.fernet import Fernet
 
-KEY = "f11ef682e1b5c7a9c9f617e3432d364621bf4471139f198259743d8f7b7d71a0"
-cipher = Fernet(KEY)
+KEY = "g05kB3VppBksCACXhqd5jxZJNJ6xmJZqQJy4WxgU7X4="
 
 
 class EncryptionService:
 
-    def encrypt_password(plain_password: str) -> str:
-        return cipher.encrypt(plain_password.encode()).decode()
+    def __init__(self):
+        self.cipher = Fernet(KEY)
 
-    def decrypt_password(encrypted_password: str) -> str:
-        return cipher.decrypt(encrypted_password.encode()).decode()
+    def encrypt_password(self, plain_password: str) -> str:
+        return self.cipher.encrypt(plain_password.encode()).decode()
+
+    def decrypt_password(self, encrypted_password: str) -> str:
+        return self.cipher.decrypt(encrypted_password.encode()).decode()

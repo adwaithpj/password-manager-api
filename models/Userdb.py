@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, PrimaryKeyConstraint, String, ForeignKey
 from sqlalchemy.orm import relationship
 from models.BaseModel import EntityMeta
-from models.passworddb import PasswordEntry
+from models.passworddb import Password
 
 # from models.UserPasswordAssociation import user_password_associatin
 
@@ -15,6 +15,10 @@ class User(EntityMeta):
     name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
+
+    passwords = relationship(
+        "Password", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def normalize(self):
         return {
