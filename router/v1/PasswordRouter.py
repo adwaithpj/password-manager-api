@@ -28,7 +28,7 @@ async def create(
     user: user_dependency,
     passwordService: PasswordService = Depends(),
 ):
-    if user.id != id and user.id != 5:
+    if not user.id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="you are not authorized to access this user",
