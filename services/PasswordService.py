@@ -32,32 +32,40 @@ class PasswordService:
     def list(
         self,
         user_id: int,
+        pass_key: str,
         pageSize: Optional[int] = 100,
         startIndex: Optional[int] = 0,
     ) -> List[Password]:
-        return self.passwordRepository.list(user_id, pageSize, startIndex)
+        return self.passwordRepository.list(user_id, pageSize, startIndex, pass_key)
 
     def create(
         self,
         id: int,
         passwordData: PasswordCreateSchema,
+        pass_key: str,
     ) -> Password:
+        # print(pass_key)
         return self.passwordRepository.create(
             Password(
                 user_id=id,
                 website_name=passwordData.website_name,
                 username_email=passwordData.username_email,
-                password=self.encryption.encrypt_password(passwordData.password),
+                password=self.encryption.encrypt_password(
+                    passwordData.password,
+                    key=pass_key,
+                ),
             )
         )
 
-    def get(self, id: int, user_id: int):
+    def get(self, id: int, user_id: int, pass_key: str):
         password = self.passwordRepository.get(id, user_id)
         if not password:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Password not found"
             )
-
+        password.password = self.encryption.decrypt_password(
+            password.password, key=pass_key
+        )
         return password
 
     def update(

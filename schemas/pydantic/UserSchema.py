@@ -25,6 +25,11 @@ class UserGetSchema(UserBaseSchema):
     id: int
 
 
+class UserCredSchema(UserBaseSchema):
+    id: int
+    pass_key: str
+
+
 class UserLoginSchema(BaseModel):
     email: str
     password: str

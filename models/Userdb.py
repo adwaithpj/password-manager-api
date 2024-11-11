@@ -1,4 +1,11 @@
-from sqlalchemy import Column, Integer, PrimaryKeyConstraint, String, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    PrimaryKeyConstraint,
+    String,
+    ForeignKey,
+    Boolean,
+)
 from sqlalchemy.orm import relationship
 from models.BaseModel import EntityMeta
 from models.passworddb import Password
@@ -15,6 +22,8 @@ class User(EntityMeta):
     name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
+    verified = Column(Boolean, default=False)
+    pass_key = Column(String, nullable=False, unique=True)
 
     passwords = relationship(
         "Password", back_populates="user", cascade="all, delete-orphan"
@@ -26,4 +35,6 @@ class User(EntityMeta):
             "name": self.name.__str__(),
             "email": self.email.__str__(),
             "hashed_password": self.hashed_password.__str__(),
+            "pass_key": self.pass_key.__str__(),
+            "verified": bool(self.verified),
         }

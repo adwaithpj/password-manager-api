@@ -33,7 +33,9 @@ async def create(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="you are not authorized to access this user",
         )
-    return passwordService.create(id=user.id, passwordData=password)
+    return passwordService.create(
+        id=user.id, passwordData=password, pass_key=user.pass_key
+    )
 
 
 # Update the password entries
@@ -61,7 +63,7 @@ async def update(
 async def get(
     id: int, user: user_dependency, passwordService: PasswordService = Depends()
 ):
-    return passwordService.get(id, user.id)
+    return passwordService.get(id, user.id, user.pass_key)
 
 
 # Get all the password attached to a user
@@ -80,7 +82,9 @@ async def index(
         password.id: password.normalize()[
             password.id
         ]  # Extract each password dict by id
-        for password in passwordService.list(user.id, pageSize, startindex)
+        for password in passwordService.list(
+            user.id, user.pass_key, pageSize, startindex
+        )
     }
     return password
 

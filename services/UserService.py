@@ -6,6 +6,7 @@ from models.Userdb import User
 # pass word model add here after completing user backend
 
 from repositories.Userrepository import UsersRepository
+from services.EncryptionService import EncryptionService
 from schemas.pydantic.UserSchema import UserCreateSchema, UserPatchSchema
 from passlib.context import CryptContext
 
@@ -15,15 +16,26 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class UserService:
     userRepository = UsersRepository
 
-    def __init__(self, userRepository: UsersRepository = Depends()) -> None:
+    def __init__(
+        self,
+        userRepository: UsersRepository = Depends(),
+        encryption: EncryptionService = Depends(),
+    ) -> None:
         self.userRepository = userRepository
+        self.encryption = encryption
 
-    def create(self, user_body: UserCreateSchema) -> User:
+    def create(
+        self,
+        user_body: UserCreateSchema,
+    ) -> User:
+        pass_main = self.encryption.generate_key()
+        print(pass_main)
         return self.userRepository.create(
             User(
                 name=user_body.name,
                 email=user_body.email,
                 hashed_password=bcrypt_context.hash(user_body.hashed_password),
+                pass_key=pass_main,
             )
         )
 

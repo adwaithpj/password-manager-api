@@ -35,6 +35,7 @@ class PasswordRepository:
         return password
 
     def get(self, password_id: int, user_id: int) -> Optional[Password]:
+
         return (
             self.db.query(Password)
             .filter(Password.id == password_id, Password.user_id == user_id)

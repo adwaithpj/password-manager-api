@@ -1,10 +1,10 @@
 from typing import List, Optional, Annotated
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Response
 from models.Userdb import User
 from starlette import status
 from schemas.pydantic.authSchema import TokenSchema, TokenDataSchema
-from schemas.pydantic.UserSchema import UserLoginSchema, UserGetSchema
+from schemas.pydantic.UserSchema import UserLoginSchema, UserGetSchema, UserCredSchema
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
@@ -37,7 +37,7 @@ class AuthService:
 
     #     return {"access_token": token, "token_type": "bearer"}
 
-    def login(self, email: str, password: str) -> TokenSchema:
+    def login(self, email: str, password: str, response: Response) -> TokenSchema:
         # Validate user credentials
         user_login = self.authenticate_user(email, password)
         if user_login == -1:
@@ -51,7 +51,16 @@ class AuthService:
             user_id=user_login.id,
             expires_delta=timedelta(minutes=10),
         )
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,  # Makes it HTTP-only
+            secure=True,  # Use `secure=True` in production
+            samesite="Lax",  # Prevents CSRF attacks (can be "Strict" or "None" too)
+        )
         return {"access_token": token, "token_type": "bearer"}
+
+    # def logout(self,)
 
     def create_access_token(self, email: str, user_id: int, expires_delta: timedelta):
         encode = {"sub": email, "id": user_id}
@@ -90,4 +99,6 @@ class AuthService:
         if user is None:
             raise credentials_exception
 
-        return UserGetSchema(id=user.id, name=user.name, email=user.email)
+        return UserCredSchema(
+            id=user.id, name=user.name, email=user.email, pass_key=user.pass_key
+        )
