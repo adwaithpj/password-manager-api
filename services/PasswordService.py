@@ -13,8 +13,11 @@ from repositories.Userrepository import UsersRepository
 from datetime import datetime, timedelta
 from models.passworddb import Password
 from services.EncryptionService import EncryptionService
+from configs.Environment import get_environment_variables
 
-SECRET_KEY = "f11ef682e1b5c7a9c9f617e3432d364621bf4471139f198259743d8f7b7d71a0"
+env = get_environment_variables()
+
+SECRET_KEY = f"{env.SECRET_KEY}"
 # bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -69,7 +72,7 @@ class PasswordService:
         return password
 
     def update(
-        self, id: int, user_id: int, passwordData: PasswordUpdateSchema
+        self, id: int, user_id: int, pass_key: str, passwordData: PasswordUpdateSchema
     ) -> Password:
         password = self.passwordRepository.get(id, user_id)
         if not password:
@@ -78,7 +81,9 @@ class PasswordService:
             )
 
         password.username_email = passwordData.username_email
-        password.password = self.encryption.encrypt_password(passwordData.password)
+        password.password = self.encryption.encrypt_password(
+            passwordData.password, key=pass_key
+        )
 
         return self.passwordRepository.update(password)
 

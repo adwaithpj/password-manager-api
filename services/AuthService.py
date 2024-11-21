@@ -10,10 +10,13 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from repositories.Userrepository import UsersRepository
 from datetime import datetime, timedelta
+from configs.Environment import get_environment_variables
 
-SECRET_KEY = "f11ef682e1b5c7a9c9f617e3432d364621bf4471139f198259743d8f7b7d71a0"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
+env = get_environment_variables()
+
+SECRET_KEY = f"{env.SECRET_KEY}"
+ALGORITHM = f"{env.ALGORITHM}"
+ACCESS_TOKEN_EXPIRE_MINUTES = int(f"{env.ACCESS_TOKEN_EXPIRE_MINUTES}")
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="v1/auth/token")

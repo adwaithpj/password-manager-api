@@ -51,7 +51,9 @@ async def update(
     passwordService: PasswordService = Depends(),
 ):
 
-    return passwordService.update(id=id, user_id=user.id, passwordData=password)
+    return passwordService.update(
+        id=id, user_id=user.id, passwordData=password, pass_key=user.pass_key
+    )
 
 
 # get password of user from its password id.
@@ -79,9 +81,8 @@ async def index(
     passwordService: PasswordService = Depends(),
 ):
     password = {
-        password.id: password.normalize()[
-            password.id
-        ]  # Extract each password dict by id
+        password.id: password.normalize()[password.id]
+        # Extract each password dict by id
         for password in passwordService.list(
             user.id, user.pass_key, pageSize, startindex
         )
