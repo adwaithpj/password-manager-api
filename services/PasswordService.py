@@ -36,7 +36,7 @@ class PasswordService:
         pageSize: Optional[int] = 100,
         startIndex: Optional[int] = 0,
     ) -> List[Password]:
-        return self.passwordRepository.list(user_id, pageSize, startIndex, pass_key)
+        return self.passwordRepository.list(user_id, pageSize, startIndex)
 
     def create(
         self,
