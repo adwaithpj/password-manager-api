@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from models.Userdb import User
 
 # pass word model add here after completing user backend
@@ -29,15 +29,21 @@ class UserService:
         user_body: UserCreateSchema,
     ) -> User:
         pass_main = self.encryption.generate_key()
-        print(pass_main)
-        return self.userRepository.create(
-            User(
-                name=user_body.name,
-                email=user_body.email,
-                hashed_password=bcrypt_context.hash(user_body.hashed_password),
-                pass_key=pass_main,
+        # print(pass_main)
+        user_check = self.userRepository.get_by_email(email=user_body.email)
+        if user_check:
+            raise HTTPException(
+                status_code=409, detail="User with this email address already exists"
             )
-        )
+        else:
+            return self.userRepository.create(
+                User(
+                    name=user_body.name,
+                    email=user_body.email,
+                    hashed_password=bcrypt_context.hash(user_body.hashed_password),
+                    pass_key=pass_main,
+                )
+            )
 
     def get(
         self, user_id: int, userRepository: UsersRepository = Depends()

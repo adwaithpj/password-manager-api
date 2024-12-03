@@ -61,7 +61,12 @@ class AuthService:
             secure=True,  # Use `secure=True` in production
             samesite="Lax",  # Prevents CSRF attacks (can be "Strict" or "None" too)
         )
-        return {"access_token": token, "token_type": "bearer"}
+        return {
+            "access_token": token,
+            "token_type": "bearer",
+            "user_id": user_login.id,
+            "user_name": user_login.name,
+        }
 
     # def logout(self,)
 

@@ -18,6 +18,9 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 AuthRouter = APIRouter(prefix="/v1/auth", tags=["auth"])
 
+authService = AuthService()
+user_dependency = Annotated[dict, Depends(authService.get_current_user)]
+
 
 @AuthRouter.post("/token", status_code=200, response_model=TokenSchema)
 async def login_for_access_token(
@@ -33,7 +36,18 @@ async def login_for_access_token(
     return token_data
 
 
+@AuthRouter.post("/login", status_code=200)
+async def login(user: user_dependency, response: JSONResponse):
+    if user:
+        return {"Success": True, "userid": user.id}
+    else:
+        raise HTTPException(status_code=401, detail="Not authorized")
+
+
 @AuthRouter.post("/logout", status_code=status.HTTP_200_OK)
-async def logout(response: JSONResponse):
-    response.delete_cookie(key="access_token")
-    return {"Message": "Successfully logged out"}
+async def logout(user: user_dependency, response: JSONResponse):
+    if user:
+        response.delete_cookie(key="access_token")
+        return {"Message": "Successfully logged out"}
+    else:
+        return {"Message": "Not logged in to log out!"}

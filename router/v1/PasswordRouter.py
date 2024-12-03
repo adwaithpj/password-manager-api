@@ -72,7 +72,7 @@ async def get(
 @PasswordRouter.get(
     "/",
     status_code=status.HTTP_200_OK,
-    response_model=Dict[int, PasswordGetSchema],
+    response_model=List[PasswordGetSchema],
 )
 async def index(
     user: user_dependency,
@@ -80,13 +80,12 @@ async def index(
     startindex: Optional[int] = 0,
     passwordService: PasswordService = Depends(),
 ):
-    password = {
-        password.id: password.normalize()[password.id]
-        # Extract each password dict by id
+    password = [
+        password
         for password in passwordService.list(
             user.id, user.pass_key, pageSize, startindex
         )
-    }
+    ]
     return password
 
 
