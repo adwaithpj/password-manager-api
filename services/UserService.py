@@ -57,6 +57,7 @@ class UserService:
         self,
         author_id: int,
     ) -> bool:
+
         return self.userRepository.delete(author_id)
 
     def update(self, user_id: int, user_body: UserPatchSchema) -> User:

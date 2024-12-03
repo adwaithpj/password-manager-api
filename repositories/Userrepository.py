@@ -5,6 +5,7 @@ from configs.Database import (
     get_db_connection,
 )
 from models.Userdb import User
+from models.passworddb import Password
 
 
 class UsersRepository:
@@ -26,13 +27,10 @@ class UsersRepository:
         return user
 
     def delete(self, id: int) -> bool:
-        try:
-            self.db.query(User).filter(User.id == id).delete()
-            self.db.commit()
-            return True
-        except Exception:
-            self.db.rollback()
-            return False
+        self.db.query(Password).filter(Password.user_id == id).delete()
+        self.db.query(User).filter(User.id == id).delete()
+        self.db.commit()
+        return True
 
     def update(self, id: int, user: User) -> User:
         print("update repo")

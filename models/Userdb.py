@@ -25,9 +25,7 @@ class User(EntityMeta):
     verified = Column(Boolean, default=False)
     pass_key = Column(String, nullable=False, unique=True)
 
-    passwords = relationship(
-        "Password", back_populates="user", cascade="all, delete-orphan"
-    )
+    passwords = relationship("Password", back_populates="user", cascade="all, delete")
 
     def normalize(self):
         return {

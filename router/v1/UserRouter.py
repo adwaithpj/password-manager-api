@@ -48,19 +48,21 @@ async def delete_user(
     user: user_dependency,
     userService: UserService = Depends(),
 ):
-    if user.id != 5:
+    if id == user.id:
+        result = userService.delete(id)
+        if result:
+            return {"message": "User deleted successfully"}
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            )
+    elif id == 5:
+        return {"Caution": "Admin User"}
+
+    else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authorized to delete this user",
-        )
-    if id == 5:
-        return {"Caution": "Admin User"}
-
-    if userService.delete(id):
-        return {"message": "User deleted successfully"}
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
 
 
